@@ -1,0 +1,868 @@
+---
+# ====== Page: Transaction Report ============================
+id: 6
+identification: 
+  name: Transaction Report
+  alias: TRANSACTION-REPORT
+  title: Transaction Report
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: TRANSACTION-HISTORY =========================
+  id: 23588871359333481
+  identification: 
+    name: TRANSACTION-HISTORY
+    title: TRANSACTION-HISTORY
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          t.transaction_id,
+          a.account_number || ' (' || a.currency_code || ')' AS account_number,
+          cl.symbol || TO_CHAR(t.amount, '999,999,990.00') AS amount,
+          t.transaction_type,
+          t.transaction_date,
+          t.remarks,
+          t.related_account,
+          a.currency_code,
+          cl.symbol
+      FROM 
+          maxwell_transactions t
+      JOIN 
+          maxwell_accounts a ON t.account_number = a.account_number
+      JOIN 
+          maxwell_customers c ON a.customer_id = c.customer_id
+      JOIN 
+          currency_lookup cl ON a.currency_code = cl.currency_code
+      WHERE 
+          c.user_name = :APP_USER
+          AND TRUNC(t.transaction_date) = NVL(TO_DATE(:P6_TRANSACTION_DATE, 'DD-MON-YYYY'), TRUNC(t.transaction_date))
+          AND t.transaction_type = NVL(:P6_TRANSACTION_TYPE, t.transaction_type)
+      ORDER BY 
+          t.transaction_date DESC;
+      
+    page-items-to-submit: 
+    - P6_TRANSACTION_DATE
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 23588985026333481
+    link: 
+      link-column: Exclude Link Column
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: No data found.
+      when-more-data-found: 'The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.'
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 23593510228334779
+      identification: 
+        name: Primary Report
+        alias: 114443
+
+    columns: 
+    - # ====== Column: RELATED_ACCOUNT =============================
+      id: 23563670613512875
+      identification: 
+        column-name: RELATED_ACCOUNT
+        type: Plain Text
+
+      heading: 
+        heading: Related Account
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 35
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TRANSACTION_ID ==============================
+      id: 23589870222333507
+      identification: 
+        column-name: TRANSACTION_ID
+        type: Hidden
+
+      heading: 
+        heading: Transaction ID
+
+      layout: 
+        sequence: 0
+
+      source: 
+        primary-key: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ACCOUNT_NUMBER ==============================
+      id: 23590252219333512
+      identification: 
+        column-name: ACCOUNT_NUMBER
+        type: Plain Text
+
+      heading: 
+        heading: Account Number
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 2
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TRANSACTION_TYPE ============================
+      id: 23590667556333512
+      identification: 
+        column-name: TRANSACTION_TYPE
+        type: Plain Text
+
+      heading: 
+        heading: Transaction Type
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 3
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TRANSACTION_DATE ============================
+      id: 23591433148333515
+      identification: 
+        column-name: TRANSACTION_DATE
+        type: Plain Text
+
+      heading: 
+        heading: Transaction Date
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 5
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: 'DD-MON-YYYY HH:MIPM'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: REMARKS =====================================
+      id: 23591832421333515
+      identification: 
+        column-name: REMARKS
+        type: Plain Text
+
+      heading: 
+        heading: Remarks
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 25
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CURRENCY_CODE ===============================
+      id: 23957723584670644
+      identification: 
+        column-name: CURRENCY_CODE
+        type: Plain Text
+
+      heading: 
+        heading: Currency Code
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 55
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: SYMBOL ======================================
+      id: 23957868211670645
+      identification: 
+        column-name: SYMBOL
+        type: Plain Text
+
+      heading: 
+        heading: Symbol
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 65
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: AMOUNT ======================================
+      id: 23957969458670646
+      identification: 
+        column-name: AMOUNT
+        type: Plain Text
+
+      heading: 
+        heading: Amount
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 75
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: Letter
+        orientation: Landscape
+        units: Inches
+        width: 11
+        height: 8.5
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+        page-header-text: Transaction Report
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+page-items: 
+- # ====== Page Item: P6_TRANSACTION_DATE ======================
+  id: 23617194096512068
+  identification: 
+    name: P6_TRANSACTION_DATE
+    type: Date Picker
+
+  label: 
+    label: Transaction Date
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 10
+    region: TRANSACTION-HISTORY # 23588871359333481
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MON-YYYY
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6_TRANSACTION_TYPE ======================
+  id: 23617488494512071
+  identification: 
+    name: P6_TRANSACTION_TYPE
+    type: Select List
+
+  label: 
+    label: Transaction Type
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: Submit Page
+    execute-validations: true
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 20
+    region: TRANSACTION-HISTORY # 23588871359333481
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT TRANSACTION_TYPE AS DISPLAY_VALUE, TRANSACTION_TYPE AS RETURN_VALUE
+      FROM MAXWELL_TRANSACTIONS
+      GROUP BY TRANSACTION_TYPE;
+      
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Clear_Filter ================================
+  id: 12153907587979351
+  identification: 
+    button-name: Clear_Filter
+    label: Clear Filter
+
+  layout: 
+    sequence: 10
+    region: TRANSACTION-HISTORY # 23588871359333481
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--primary
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: Refresh =============================
+  id: 12155884598979356
+  identification: 
+    name: Refresh
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6_TRANSACTION_DATE
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 12156343852979357
+    identification: 
+      name: Refresh
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: TRANSACTION-HISTORY # 23588871359333481
+
+    execution: 
+      sequence: 10
+      event: Refresh # 12155884598979356
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: New ========================================
+  id: 12155454164979356
+  identification: 
+    name: New
+    type: Clear Session State
+    execution-chain: None
+
+  settings: 
+    type: Clear all Items on the Current Page
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: Clear_Filter # 12153907587979351
+
+- # ====== Process: Export Format ==============================
+  id: 12446443039810120
+  identification: 
+    name: Export Format
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_context apex_exec.t_context;
+          l_export  apex_data_export.t_export;
+          l_format  VARCHAR2(10) := :P6_EXPORT_FORMAT;
+      BEGIN
+          l_context := apex_exec.open_query_context(
+              p_location  => apex_exec.c_location_local_db,
+              p_sql_query => q'[
+                  SELECT 
+                      t.transaction_id,
+                      a.account_number || ' (' || a.currency_code || ')' AS account_number,
+                      cl.symbol || TO_CHAR(t.amount, '999,999,990.00') AS amount,
+                      t.transaction_type,
+                      t.transaction_date,
+                      t.remarks,
+                      t.related_account,
+                      a.currency_code,
+                      cl.symbol,
+                      c.full_name AS customer_name
+                  FROM 
+                      maxwell_transactions t
+                  JOIN 
+                      maxwell_accounts a ON t.account_number = a.account_number
+                  JOIN 
+                      maxwell_customers c ON a.customer_id = c.customer_id
+                  JOIN 
+                      currency_lookup cl ON a.currency_code = cl.currency_code
+                  WHERE 
+                      c.user_name = :APP_USER
+                  ORDER BY 
+                      t.transaction_date DESC
+              ]'
+          );
+      
+          IF l_format = 'PDF' THEN
+              l_export := apex_data_export.export(
+                  p_context   => l_context,
+                  p_format    => apex_data_export.c_format_pdf,
+                  p_file_name   => :APP_USER || '.pdf'
+      
+              );
+          ELSIF l_format = 'XLSX' THEN
+              l_export := apex_data_export.export(
+                  p_context   => l_context,
+                  p_format    => apex_data_export.c_format_xlsx,
+                  p_file_name  => :APP_USER || '.xlsx'
+      
+              );
+          END IF;
+      
+          apex_exec.close(l_context);
+          apex_data_export.download(p_export => l_export);
+          apex_application.stop_apex_engine;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              apex_exec.close(l_context);
+              raise;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  configuration: 
+    build-option: Commented Out # 12043061527080517
+

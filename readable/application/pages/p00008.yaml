@@ -1,0 +1,594 @@
+---
+# ====== Page: Transfer ======================================
+id: 8
+identification: 
+  name: Transfer
+  alias: TRANSFER
+  title: Transfer
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Transfer ====================================
+  id: 35173994051104967
+  identification: 
+    name: Transfer
+    title: Transfer
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P8_TRANSFER_TYPE =========================
+  id: 23591049691693447
+  identification: 
+    name: P8_TRANSFER_TYPE
+    type: Radio Group
+
+  label: 
+    label: Transfer Type
+    alignment: Left
+
+  settings: 
+    number-of-columns: 1
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 10
+    region: Transfer # 35173994051104967
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:IntraTransfer;INTRA,InterTransfer;INTER'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P8_CUSTOMER_ID ===========================
+  id: 23591487608693451
+  identification: 
+    name: P8_CUSTOMER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 30
+    region: Transfer # 35173994051104967
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P8_ACCOUNT_NUMBER_FROM ===================
+  id: 35176308761104993
+  identification: 
+    name: P8_ACCOUNT_NUMBER_FROM
+    type: Select One
+
+  label: 
+    label: Account Number From
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 20
+    region: Transfer # 35173994051104967
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT
+          a.account_number || ' (' || a.currency_code || ')' AS account_with_currency,
+          a.account_number AS account_number
+      FROM
+          maxwell_accounts a
+      JOIN
+          maxwell_customers c ON a.customer_id = c.customer_id
+      WHERE
+          c.user_name = :APP_USER;
+      
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P8_ACCOUNT_NUMBER_TO =====================
+  id: 35176403290104994
+  identification: 
+    name: P8_ACCOUNT_NUMBER_TO
+    type: Select One
+
+  label: 
+    label: Account Number To
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 40
+    region: Transfer # 35173994051104967
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      WITH source_account AS (
+        SELECT account_number, currency_code, customer_id
+        FROM maxwell_accounts
+        WHERE account_number = :P8_ACCOUNT_NUMBER_FROM
+      )
+      SELECT 
+          E.account_number AS d,
+          E.account_number AS r
+      FROM 
+          maxwell_accounts E
+      JOIN
+          source_account S ON E.currency_code = S.currency_code
+      WHERE 
+          E.account_number != :P8_ACCOUNT_NUMBER_FROM
+          AND (
+            (:P8_TRANSFER_TYPE = 'INTRA' AND E.customer_id = S.customer_id)
+            OR
+            (:P8_TRANSFER_TYPE = 'INTER' AND E.customer_id != S.customer_id)
+          );
+      
+      
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P8_TRANSFER_TYPE
+    - P8_ACCOUNT_NUMBER_FROM
+    items-to-submit: 
+    - P8_TRANSFER_TYPE
+    - P8_ACCOUNT_NUMBER_FROM
+    - P8_CUSTOMER_ID
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P8_AMOUNT ================================
+  id: 35176526635104995
+  identification: 
+    name: P8_AMOUNT
+    type: Number Field
+
+  label: 
+    label: Amount
+    alignment: Left
+
+  settings: 
+    minimum-value: 50
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 50
+    region: Transfer # 35173994051104967
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Transfer ====================================
+  id: 12125433277160707
+  identification: 
+    button-name: Transfer
+    label: Transfer
+
+  layout: 
+    sequence: 60
+    region: Transfer # 35173994051104967
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--primary
+    - t-Button--iconLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: New =================================
+  id: 12128796510160717
+  identification: 
+    name: New
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: .but
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 12129226805160718
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: var x = 3
+
+    execution: 
+      sequence: 10
+      event: New # 12128796510160717
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: set customer_id =====================
+  id: 12129621982160718
+  identification: 
+    name: set customer_id
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P8_ACCOUNT_NUMBER_FROM
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 12130143720160720
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        select customer_id 
+        from maxwell_accounts 
+        where account_number = :P8_ACCOUNT_NUMBER_FROM
+      items-to-submit: 
+      - P8_ACCOUNT_NUMBER_FROM
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P8_CUSTOMER_ID
+
+    execution: 
+      sequence: 10
+      event: set customer_id # 12129621982160718
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 12130619069160720
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P8_ACCOUNT_NUMBER_TO
+
+    execution: 
+      sequence: 20
+      event: set customer_id # 12129621982160718
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: New_1 ======================================
+  id: 12127571031160715
+  identification: 
+    name: New_1
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: null;
+
+  execution: 
+    sequence: 10
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Transfer ===================================
+  id: 12127938902160715
+  identification: 
+    name: Transfer
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        maxwell_transaction_api.transfer(
+          :P8_ACCOUNT_NUMBER_FROM, 
+          :P8_ACCOUNT_NUMBER_TO, 
+          :P8_AMOUNT,
+          :P8_TRANSFER_TYPE);
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Transfer Successful
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: New ========================================
+  id: 12128367147160717
+  identification: 
+    name: New
+    type: Clear Session State
+    execution-chain: None
+
+  settings: 
+    type: Clear all Items on the Current Page
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+branches: 
+- # ====== Branch: Go To Page 7 ================================
+  id: 12131154237160721
+  identification: 
+    name: Go To Page 7
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:6:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: 6 # Transaction Report
+

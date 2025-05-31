@@ -1,0 +1,9 @@
+---
+- # ====== Install Script: Bank App ============================
+  id: 12518220677115667
+  identification: 
+    name: Bank App
+
+  execution: 
+    sequence: 10
+

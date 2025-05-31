@@ -1,0 +1,53 @@
+---
+- # ====== Authentication: Oracle APEX Accounts ================
+  id: 12043366085080520
+  identification: 
+    name: Oracle APEX Accounts
+
+  subscription: 
+    version-number: 32229164
+
+  settings: 
+    type: Oracle APEX Accounts
+
+  session-not-valid: 
+    redirect-to: Login Page
+
+  login-processing: 
+    switch-in-session: false
+
+  real-application-security: 
+    ras-mode: Disabled
+
+- # ====== Authentication: user ================================
+  id: 12082259204727635
+  identification: 
+    name: user
+
+  subscription: 
+    version-number: 32264264
+
+  settings: 
+    type: Custom
+    authentication-function-name: verify_user
+    enable-legacy-authentication-attributes: false
+
+  source: 
+    pl/sql-code: |
+      FUNCTION verify_user(
+          p_username IN VARCHAR2,
+          p_password IN VARCHAR2
+      ) RETURN BOOLEAN IS
+      BEGIN
+        RETURN maxwell_customer_api.authenticate_user(p_username, p_password);
+      END;
+
+  session-not-valid: 
+    redirect-to: Login Page
+
+  login-processing: 
+    switch-in-session: false
+
+  real-application-security: 
+    ras-mode: Disabled
+

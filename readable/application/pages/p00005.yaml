@@ -1,0 +1,362 @@
+---
+# ====== Page: Account Details ===============================
+id: 5
+identification: 
+  name: Account Details
+  alias: ACCOUNT-DETAILS
+  title: Account Details
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    /* --- Base Styles for the Entire Profile Container --- */
+    .profile-container {
+        font-family: Arial, sans-serif;
+        line-height: 1.4; /* Reduced line height */
+        color: #333;
+        padding: 15px; /* Reduced padding */
+        border: 1px solid #e0e0e0;
+        border-radius: 8px; /* Slightly less rounded */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+        background-color: #ffffff;
+        margin-bottom: 15px; /* Reduced space below */
+        font-size: 0.95em; /* Slightly reduced base font size */
+    }
+    
+    .profile-container h3 {
+        text-align: center;
+        color: #0056b3;
+        margin-top: 0;
+        padding-bottom: 10px; /* Reduced padding */
+        border-bottom: 1px solid #0056b3; /* Thinner border */
+        font-size: 1.5em; /* Reduced heading size */
+        margin-bottom: 15px; /* Reduced margin */
+    }
+    
+    /* --- Customer Details Section --- */
+    .customer-details-list {
+        margin-bottom: 20px; /* Reduced space between customer and accounts */
+    }
+    
+    .customer-details-list p {
+        font-weight: bold;
+        color: #555;
+        margin-bottom: 10px; /* Reduced margin */
+        font-size: 1em; /* Adjusted font size */
+    }
+    
+    .customer-details-list ul {
+        list-style-type: none;
+        padding-left: 0;
+        margin-top: 0;
+    }
+    
+    .customer-details-list ul li {
+        background-color: #f0f8ff;
+        margin-bottom: 5px; /* Reduced margin */
+        padding: 8px 10px; /* Reduced padding */
+        border-radius: 4px;
+        border-left: 3px solid #007bff; /* Thinner accent border */
+        font-size: 0.95em; /* Slightly smaller list item size */
+    }
+    
+    .customer-details-list ul li strong {
+        color: #004085;
+        min-width: 90px; /* Slightly smaller min-width if needed */
+        display: inline-block;
+    }
+    
+    /* --- Accounts Section --- */
+    .account-details-section {
+        border-top: 1px dashed #a0a0a0;
+        padding-top: 15px; /* Reduced padding */
+    }
+    
+    .account-details-section h4 {
+        color: #28a745;
+        margin-bottom: 15px; /* Reduced margin */
+        font-size: 1.3em; /* Reduced subheading size */
+        text-align: center;
+    }
+    
+    .account-item {
+        background-color: #e9ffe9;
+        border: 1px solid #b3e0b3;
+        padding: 10px 15px; /* Reduced padding */
+        border-radius: 6px;
+        margin-bottom: 10px; /* Reduced space between accounts */
+        font-size: 0.95em; /* Slightly smaller font size */
+    }
+    
+    .account-item p {
+        font-weight: bold;
+        color: #1e7e34;
+        margin-top: 0;
+        margin-bottom: 8px; /* Reduced margin */
+        font-size: 1em; /* Adjusted font size */
+    }
+    
+    .account-item ul {
+        list-style-type: disc;
+        padding-left: 20px; /* Reduced padding */
+        margin-top: 0;
+    }
+    
+    .account-item ul li {
+        margin-bottom: 3px; /* Reduced margin */
+    }
+    
+    /* --- No Data/Error Messages --- */
+    .info-message {
+        padding: 10px; /* Reduced padding */
+        border-radius: 6px;
+        font-size: 1em; /* Adjusted font size */
+        text-align: center;
+        margin-top: 10px; /* Add some margin for separation */
+    }
+    
+    .info-message.warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+    }
+    
+    .info-message.error {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 12142812477849004
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 12043607686080526
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region:  Account Details ============================
+  id: 12165155583171734
+  identification: 
+    name: ' Account Details'
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html CLOB;
+        l_customer_rec maxwell_customers%ROWTYPE;
+        l_accounts_found BOOLEAN := FALSE;
+      BEGIN
+        l_html := ''; -- Initialize CLOB
+      
+        IF :APP_USER IS NOT NULL THEN
+          -- Start the main profile container div
+          l_html := l_html || '<div class="profile-container">';
+      
+          BEGIN
+            SELECT *
+            INTO l_customer_rec
+            FROM maxwell_customers
+            WHERE user_name = :APP_USER;
+      
+            -- Customer Details Section
+            l_html := l_html || '<h3>Hello, ' || APEX_ESCAPE.HTML(l_customer_rec.full_name) || '!</h3>';
+            l_html := l_html || '<div class="customer-details-list">';
+            l_html := l_html || '<p>Here are your profile details:</p>';
+            l_html := l_html || '<ul>';
+            l_html := l_html || '  <li><strong>Customer ID:</strong> ' || APEX_ESCAPE.HTML(l_customer_rec.customer_id) || '</li>';
+            l_html := l_html || '  <li><strong>Email:</strong> ' || APEX_ESCAPE.HTML(l_customer_rec.email) || '</li>';
+            l_html := l_html || '  <li><strong>Phone:</strong> ' || APEX_ESCAPE.HTML(l_customer_rec.phone) || '</li>';
+            l_html := l_html || '  <li><strong>Address:</strong> ' || APEX_ESCAPE.HTML(l_customer_rec.address) || '</li>';
+            l_html := l_html || '  <li><strong>Gender:</strong> ' || APEX_ESCAPE.HTML(l_customer_rec.gender) || '</li>';
+            l_html := l_html || '</ul>';
+            l_html := l_html || '</div>'; -- Close customer-details-list
+      
+            -- Accounts Section
+            l_html := l_html || '<div class="account-details-section">';
+            l_html := l_html || '<h4>Your Accounts:</h4>';
+      
+            -- The modified FOR loop query
+            FOR r_acc IN (
+                SELECT
+                    ma.account_number,
+                    ma.account_type,
+                    ma.balance,
+                    ma.currency_code,
+                    NVL(c.symbol, ma.currency_code) AS display_symbol -- Get symbol, or fall back to code
+                FROM
+                    maxwell_accounts ma
+                LEFT JOIN
+                    currency_lookup c ON ma.currency_code = c.currency_code
+                WHERE
+                    ma.customer_id = l_customer_rec.customer_id
+                ORDER BY
+                    ma.account_number
+            ) LOOP
+              l_accounts_found := TRUE;
+              l_html := l_html || '<div class="account-item">';
+              l_html := l_html || '<p><strong>Account:</strong> ' || APEX_ESCAPE.HTML(r_acc.account_number) || '</p>';
+              l_html := l_html || '<ul>';
+              l_html := l_html || '  <li>Type: ' || APEX_ESCAPE.HTML(r_acc.account_type) || '</li>';
+              -- The modified Balance display line
+              l_html := l_html || '  <li>**Balance:** ' || APEX_ESCAPE.HTML(r_acc.display_symbol) || APEX_ESCAPE.HTML(TO_CHAR(r_acc.balance, 'FM999,999,999.00')) || '</li>';
+              l_html := l_html || '</ul>';
+              l_html := l_html || '</div>'; -- Close account-item
+            END LOOP;
+      
+            IF NOT l_accounts_found THEN
+              l_html := l_html || '<p class="info-message warning">You currently have no accounts linked.</p>';
+            END IF;
+      
+            l_html := l_html || '</div>'; -- Close account-details-section
+      
+          EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+              l_html := l_html || '<p class="info-message warning">No customer profile found for your account (' || APEX_ESCAPE.HTML(:APP_USER) || ').</p>';
+          END;
+      
+          l_html := l_html || '</div>'; -- Close profile-container
+        ELSE
+          l_html := '<p class="info-message">Please log in to view your personalized profile and account details.</p>';
+        END IF;
+      
+        RETURN l_html;
+      
+      EXCEPTION
+        WHEN OTHERS THEN
+          RETURN '<p class="info-message error">An unexpected error occurred: ' || SQLERRM || '</p>';
+      END;
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+page-items: 
+- # ====== Page Item: P5_CUSTOMER_ID ===========================
+  id: 12163892394171721
+  identification: 
+    name: P5_CUSTOMER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+

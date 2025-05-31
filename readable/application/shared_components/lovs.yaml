@@ -1,0 +1,63 @@
+---
+- # ====== List of Values: MAXWELL_CUSTOMERS.FULL_NAME =========
+  id: 12172134306316446
+  identification: 
+    name: MAXWELL_CUSTOMERS.FULL_NAME
+
+  subscription: 
+    version-number: 32488843
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: MAXWELL_CUSTOMERS
+
+  column-mapping: 
+    return: CUSTOMER_ID
+    display: FULL_NAME
+    default-sort: FULL_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: SERVICE_REQUESTS ====================
+  id: 12180230170448606
+  identification: 
+    name: SERVICE_REQUESTS
+
+  subscription: 
+    version-number: 32501915
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT SERVICE_NAME AS DISPLAY_VALUE, SERVICE_CODE AS RETURN_VALUE
+      FROM MAXWELL_SERVICE_REQUESTS_LOOKUP
+      ORDER BY SERVICE_NAME;
+      
+
+  column-mapping: 
+    return: RETURN_VALUE
+    display: DISPLAY_VALUE
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: CURRENCY_LOOKUP.CURRENCY_NAME =======
+  id: 12417428543359710
+  identification: 
+    name: CURRENCY_LOOKUP.CURRENCY_NAME
+
+  subscription: 
+    version-number: 33772420
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: CURRENCY_LOOKUP
+
+  column-mapping: 
+    return: CURRENCY_CODE
+    display: CURRENCY_NAME
+    default-sort: CURRENCY_NAME
+    sort-direction: Ascending (Nulls Last)
+

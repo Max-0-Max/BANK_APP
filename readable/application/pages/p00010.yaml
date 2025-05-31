@@ -1,0 +1,317 @@
+---
+# ====== Page: Downloadble Things ============================
+id: 10
+identification: 
+  name: Downloadble Things
+  alias: DOWNLOADBLE-THINGS
+  title: Downloadble Things
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Transaction Report ==========================
+  id: 12446550840810121
+  identification: 
+    name: Transaction Report
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 12514154532045793
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 12043607686080526
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+page-items: 
+- # ====== Page Item: P10_EXPORT_FORMAT ========================
+  id: 12446780103810123
+  identification: 
+    name: P10_EXPORT_FORMAT
+    type: Select List
+
+  label: 
+    label: Export Format
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: Submit Page
+    execute-validations: true
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Transaction Report # 12446550840810121
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:Excel	;XLSX,PDF;PDF'
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Clear_Filter ================================
+  id: 12517162479089482
+  identification: 
+    button-name: Clear_Filter
+    label: Clear Filter
+
+  layout: 
+    sequence: 20
+    region: Transaction Report # 12446550840810121
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--primary
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+processes: 
+- # ====== Process: Download statement =========================
+  id: 12446855904810124
+  identification: 
+    name: Download statement
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_context apex_exec.t_context;
+          l_export  apex_data_export.t_export;
+          l_format  VARCHAR2(10) := :P10_EXPORT_FORMAT;
+      BEGIN
+          l_context := apex_exec.open_query_context(
+              p_location  => apex_exec.c_location_local_db,
+              p_sql_query => q'[
+                  SELECT 
+                      t.transaction_id,
+                      a.account_number || ' (' || a.currency_code || ')' AS account_number,
+                      cl.symbol || TO_CHAR(t.amount, '999,999,990.00') AS amount,
+                      t.transaction_type,
+                      t.transaction_date,
+                      t.remarks,
+                      t.related_account,
+                      a.currency_code,
+                      cl.symbol,
+                      c.full_name AS customer_name
+                  FROM 
+                      maxwell_transactions t
+                  JOIN 
+                      maxwell_accounts a ON t.account_number = a.account_number
+                  JOIN 
+                      maxwell_customers c ON a.customer_id = c.customer_id
+                  JOIN 
+                      currency_lookup cl ON a.currency_code = cl.currency_code
+                  WHERE 
+                      c.user_name = :APP_USER
+                  ORDER BY 
+                      t.transaction_date DESC
+              ]'
+          );
+      
+          IF l_format = 'PDF' THEN
+              l_export := apex_data_export.export(
+                  p_context   => l_context,
+                  p_format    => apex_data_export.c_format_pdf,
+                  p_file_name   => :APP_USER || '.pdf'
+      
+              );
+          ELSIF l_format = 'XLSX' THEN
+              l_export := apex_data_export.export(
+                  p_context   => l_context,
+                  p_format    => apex_data_export.c_format_xlsx,
+                  p_file_name  => :APP_USER || '.xlsx'
+      
+              );
+          END IF;
+      
+          apex_exec.close(l_context);
+          apex_data_export.download(p_export => l_export);
+          apex_application.stop_apex_engine;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              apex_exec.close(l_context);
+              raise;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: New ========================================
+  id: 12446905536810125
+  identification: 
+    name: New
+    type: Clear Session State
+    execution-chain: None
+
+  settings: 
+    type: Clear all Items on the Current Page
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: Clear_Filter # 12517162479089482
+
